@@ -71,22 +71,43 @@ footer{margin-top:20px;text-align:center;color:var(--muted);font-size:.95rem}
 <footer>Nouveau signe la semaine prochaine.</footer>
 </main>
 <script>
-(function(){
-var v=document.getElementById('v'),slow=document.getElementById('slow'),pause=document.getElementById('pause'),sound=document.getElementById('sound'),hint=document.getElementById('hint'),seek=document.getElementById('seek'),drag=false;
-function setPause(p){if(p){v.pause()}else{v.play().catch(function(){})}pause.setAttribute('aria-pressed',String(p));pause.textContent=p?'Lecture':'Pause'}
-function hideHint(){hint.style.display='none'}
-slow.addEventListener('click',function(){var on=slow.getAttribute('aria-pressed')!=='true';v.playbackRate=on?0.5:1;slow.setAttribute('aria-pressed',String(on));slow.textContent=on?'Normal':'Ralenti'});
-pause.addEventListener('click',function(){setPause(!v.paused)});
-v.addEventListener('click',function(){setPause(!v.paused);hideHint()});
-sound.addEventListener('click',function(){var on=v.muted;v.muted=!on;sound.setAttribute('aria-pressed',String(on));sound.textContent=on?'Sans son':'Son';if(on)hideHint();if(on&&v.paused)setPause(false)});
-function paint(){var r=v.duration?v.currentTime/v.duration:0;seek.value=Math.round(r*1000);seek.style.setProperty('--p',(r*100)+'%')}
-v.addEventListener('timeupdate',function(){if(!drag)paint()});
-v.addEventListener('loadedmetadata',paint);
-seek.addEventListener('pointerdown',function(){drag=true});
-seek.addEventListener('pointerup',function(){drag=false});
-seek.addEventListener('input',function(){if(v.duration){v.currentTime=seek.value/1000*v.duration;seek.style.setProperty('--p',(seek.value/10)+'%')}});
-setTimeout(hideHint,7000);
-})();
+  const video = document.getElementById('v');
+  const slowBtn = document.getElementById('slow');
+  const pauseBtn = document.getElementById('pause');
+  const soundBtn = document.getElementById('sound');
+
+  // Rendre toute la zone vidéo cliquable pour lancer / mettre en pause
+  video.addEventListener('click', () => {
+    if (video.paused) {
+      video.play();
+    } else {
+      video.pause();
+    }
+  });
+
+  // Bouton Pause / Lecture
+  pauseBtn.addEventListener('click', () => {
+    if (video.paused) {
+      video.play();
+      pauseBtn.textContent = "Pause";
+    } else {
+      video.pause();
+      pauseBtn.textContent = "Lecture";
+    }
+  });
+
+  // Bouton Ralenti
+  slowBtn.addEventListener('click', () => {
+    video.playbackRate = video.playbackRate === 0.5 ? 1.0 : 0.5;
+    slowBtn.textContent = video.playbackRate === 0.5 ? "Vitesse normale" : "Ralenti";
+  });
+
+  // Bouton Son
+  soundBtn.addEventListener('click', () => {
+    video.muted = !video.muted;
+    soundBtn.textContent = video.muted ? "Activer son" : "Coper son";
+    if (video.paused) video.play();
+  });
 </script>
 <!-- Cloudflare Web Analytics -->
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ebdb4ab4e13840ea9a2833b1f9f082df"}'></script>
